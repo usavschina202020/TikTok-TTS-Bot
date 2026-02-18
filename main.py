@@ -4,40 +4,43 @@ import time
 from datetime import datetime
 
 # Cargar variables desde Railway (NO poner valores reales aquí)
-TOKEN = os.getenv("8484928881:AAFw_WDaVgws2bc7rVdmO99VKP0gv4-M11M")
-CHAT_ID = os.getenv("8511189342")
+TOKEN = os.getenv("TELEGRAM_TOKEN")
+CHAT_ID = os.getenv("CHAT_ID")
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
-USERNAME = os.getenv("USERNAME", "rosangelaeslo")  # cambia aquí si quieres otro por defecto
+USERNAME = os.getenv("USERNAME", "rosangelaeslo")  # por defecto rosangelaeslo
 
-print("Bot iniciado - hora:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
-print(f"Variables: USERNAME={USERNAME}, CHAT_ID={CHAT_ID}, TOKEN existe={bool(TOKEN)}, APIFY_TOKEN existe={bool(APIFY_TOKEN)}")
+print("=== Bot iniciado ===")
+print("Hora actual:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+print("Variables cargadas:")
+print("  TELEGRAM_TOKEN:", "existe" if TOKEN else "NO ENCONTRADO")
+print("  CHAT_ID:", CHAT_ID if CHAT_ID else "NO ENCONTRADO")
+print("  APIFY_TOKEN:", "existe" if APIFY_TOKEN else "NO ENCONTRADO")
+print("  USERNAME:", USERNAME)
+print("===================")
 
 def send_message(text):
     if not TOKEN or not CHAT_ID:
-        print("Error: TOKEN o CHAT_ID no están configurados en variables de Railway")
+        print("ERROR: TOKEN o CHAT_ID no están configurados en Railway")
         return
-    print(f"Enviando mensaje: {text}")
+    print(f"Intentando enviar mensaje: {text}")
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
     try:
         r = requests.post(url, data={"chat_id": CHAT_ID, "text": text, "parse_mode": "Markdown"})
-        print(f"Respuesta Telegram: {r.status_code} - {r.text}")
+        print(f"Respuesta Telegram: status={r.status_code}, texto={r.text}")
     except Exception as e:
-        print(f"Error enviando mensaje: {e}")
+        print(f"Error enviando mensaje: {str(e)}")
 
 def check_stories():
     if not APIFY_TOKEN:
         send_message("Error: APIFY_TOKEN no está configurado en Railway")
         return
-
-    print("Iniciando chequeo de stories para", USERNAME)
+    print(f"Chequeando stories para: @{USERNAME}")
     url = f"https://api.apify.com/v2/acts/igview-owner~tiktok-story-viewer/runs?token={APIFY_TOKEN}&waitForFinish=60"
     payload = {"uniqueIds": [USERNAME]}
     print("Enviando petición a Apify...")
-    
     try:
         r = requests.post(url, json=payload)
-        print(f"Respuesta Apify status: {r.status_code}")
-        
+        print(f"Respuesta Apify: status={r.status_code}")
         if r.status_code == 200:
             data = r.json()
             print("Data Apify:", data)
@@ -46,7 +49,6 @@ def check_stories():
                 items_url = f"https://api.apify.com/v2/datasets/{dataset_id}/items?token={APIFY_TOKEN}"
                 items = requests.get(items_url).json()
                 print(f"Items encontrados: {len(items)}")
-                
                 if items:
                     send_message(f"¡Nueva story de @{USERNAME}! ({len(items)} stories)")
                     for item in items:
