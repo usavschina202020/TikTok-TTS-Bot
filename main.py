@@ -3,10 +3,10 @@ import os
 import time
 from datetime import datetime
 
-TOKEN = os.getenv("TELEGRAM_TOKEN")
-CHAT_ID = os.getenv("CHAT_ID")
+TOKEN = os.getenv("8484928881:AAFw_WDaVgws2bc7rVdmO99VKP0gv4-M11M")
+CHAT_ID = os.getenv("8511189342")
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
-USERNAME = os.getenv("USERNAME", "rosangelaeslo")
+USERNAME = os.getenv("rosangelaeslo")
 
 def send_message(text):
     url = f"https://api.telegram.org/bot{TOKEN}/sendMessage"
