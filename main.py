@@ -4,19 +4,12 @@ import os
 import time
 from datetime import datetime
 
-git add main.py
-git commit -m "Agrega polling para esperar run de Apify y evita error 201"
-git push
-
-
-
-# === Cargar variables desde Railway (variables de entorno) ===
+# === Variables desde Railway ===
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
-USERNAME = os.getenv("USERNAME", "nicki.nicole")  # ← aquí puedes cambiar el usuario por defecto
+USERNAME = os.getenv("USERNAME", "nicki.nicole")  # Cambia aquí si quieres otro usuario
 
-# Mensaje de inicio para depuración
 print("=== Bot iniciado en Railway - Versión FINAL con polling ===")
 print("Hora actual:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 print("Directorio actual:", os.getcwd())
@@ -50,7 +43,7 @@ def check_stories():
         send_telegram("Error: APIFY_TOKEN no configurado en Railway")
         return
 
-    # 1. Lanzar el run en Apify
+    # 1. Lanzar el run
     url = f"https://api.apify.com/v2/acts/igview-owner~tiktok-story-viewer/runs?token={APIFY_TOKEN}"
     payload = {"uniqueIds": [USERNAME]}
     print("Enviando petición a Apify...")
@@ -67,15 +60,15 @@ def check_stories():
         run_id = data["id"]
         print(f"Run creado, ID: {run_id}")
 
-        # 2. Polling: esperar hasta que el run termine
+        # 2. Polling: esperar hasta que termine
         print("Esperando que el run termine...")
         dataset_id = None
-        max_attempts = 40  # máximo 40 intentos = ~4 minutos
+        max_attempts = 40  # ~4 minutos máximo
         attempt = 0
 
         while attempt < max_attempts:
             attempt += 1
-            time.sleep(6)  # espera 6 segundos entre chequeos
+            time.sleep(6)  # 6 segundos entre chequeos
 
             status_url = f"https://api.apify.com/v2/actor-runs/{run_id}?token={APIFY_TOKEN}"
             status_r = requests.get(status_url)
@@ -91,14 +84,14 @@ def check_stories():
                 dataset_id = status_data.get("defaultDatasetId")
                 break
             elif status in ["FAILED", "ABORTED", "TIMED-OUT"]:
-                send_telegram(f"Error: El run falló en Apify (Status: {status})")
+                send_telegram(f"Error: El run falló (Status: {status})")
                 return
 
         if not dataset_id:
-            send_telegram("Error: El run no terminó a tiempo o no creó dataset")
+            send_telegram("Error: Run no terminó o no creó dataset")
             return
 
-        # 3. Obtener los items del dataset
+        # 3. Obtener items
         items_url = f"https://api.apify.com/v2/datasets/{dataset_id}/items?token={APIFY_TOKEN}"
         items_r = requests.get(items_url)
         if items_r.status_code != 200:
@@ -113,7 +106,6 @@ def check_stories():
             for item in items:
                 video_url = item.get("video_url")
                 if video_url:
-                    # Enviar solo el link (puedes cambiar a sendVideo si quieres el MP4 directo)
                     send_telegram(f"Video: {video_url}")
         else:
             send_telegram(f"Hoy no hay stories nuevas de @{USERNAME} 😴\nChequeo: {datetime.now().strftime('%d/%m/%Y %H:%M')}")
@@ -126,4 +118,4 @@ print("Iniciando bucle...")
 while True:
     check_stories()
     print("Durmiendo 86400 segundos (24 horas)...")
-    time.sleep(86400)  # 24 horas - cámbialo a 60 para pruebas
+    time.sleep(86400)  # Cambia a 60 para pruebas rápidas
