@@ -3,6 +3,20 @@ import os
 import time
 from datetime import datetime
 
+print("=== Bot iniciado en Railway - Versión FINAL ===")
+print("Hora actual:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
+print("Directorio actual:", os.getcwd())
+print("Python versión:", sys.version.split()[0])
+print("Variables de entorno detectadas:")
+print("  TELEGRAM_TOKEN:", "existe" if TELEGRAM_TOKEN else "FALTA")
+print("  CHAT_ID:", CHAT_ID if CHAT_ID else "FALTA")
+print("  APIFY_TOKEN:", "existe" if APIFY_TOKEN else "FALTA")
+print("  USERNAME:", USERNAME)
+print("===================")
+
+
+
+
 # === Cargar variables desde Railway (NO poner valores reales aquí) ===
 TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID = os.getenv("CHAT_ID")
@@ -72,4 +86,4 @@ print("Entrando al bucle...")
 while True:
     check_stories()
     print("Durmiendo 60 segundos (modo prueba)...")
-    time.sleep(10)  # cada 10 segundos (prueba)
+    time.sleep(5)  # cada 10 segundos (prueba)
