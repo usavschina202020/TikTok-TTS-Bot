@@ -14,7 +14,7 @@ def send_message(text):
 
 def check_stories():
     url = f"https://api.apify.com/v2/acts/igview-owner~tiktok-story-viewer/runs?token={APIFY_TOKEN}&waitForFinish=60"
-    payload = {"uniqueIds": [USERNAME]}
+    payload = {"uniqueIds": [rosangelaeslo]}
     r = requests.post(url, json=payload)
     if r.status_code == 200:
         data = r.json()
@@ -22,13 +22,13 @@ def check_stories():
         if dataset_id:
             items = requests.get(f"https://api.apify.com/v2/datasets/{dataset_id}/items?token={APIFY_TOKEN}").json()
             if items:
-                send_message(f"¡Nueva story de @{USERNAME}! ({len(items)} stories)")
+                send_message(f"¡Nueva story de @{rosangelaeslo}! ({len(items)} stories)")
                 for item in items:
                     video_url = item.get("video_url")
                     if video_url:
                         send_message(video_url)  # envía link, o usa sendVideo si tienes el file
             else:
-                send_message(f"Hoy no hay stories nuevas de @{USERNAME} 😴\n{datetime.now().strftime('%d/%m/%Y %H:%M')}")
+                send_message(f"Hoy no hay stories nuevas de @{rosangelaeslo} 😴\n{datetime.now().strftime('%d/%m/%Y %H:%M')}")
         else:
             send_message("Error en Apify: no dataset")
     else:
