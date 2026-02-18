@@ -36,4 +36,4 @@ def check_stories():
 
 while True:
     check_stories()
-    time.sleep(24 * 3600)  # cada 24 horas
+    time.sleep(60)  # cada 1 minuto
