@@ -72,4 +72,4 @@ print("Entrando al bucle...")
 while True:
     check_stories()
     print("Durmiendo 60 segundos (modo prueba)...")
-    time.sleep(60)  # Cambia a 86400 cuando termine de probar
+    time.sleep(10)  # cada 10 segundos (prueba)
