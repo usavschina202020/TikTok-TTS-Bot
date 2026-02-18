@@ -10,7 +10,7 @@ from datetime import datetime
 TELEGRAM_TOKEN = os.getenv("TELEGRAM_TOKEN")
 CHAT_ID        = os.getenv("CHAT_ID")
 APIFY_TOKEN    = os.getenv("APIFY_TOKEN")
-USERNAME       = os.getenv("USERNAME", "nicki.nicole")  # puedes cambiarlo en Railway
+USERNAME       = os.getenv("USERNAME", "rosangelaeslo")  # puedes cambiarlo en Railway
 
 # ────────────────────────────────────────────────
 # Validación inicial (modo Batman: no fallar silenciosamente)
