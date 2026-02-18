@@ -7,7 +7,7 @@ from datetime import datetime
 TOKEN = os.getenv("8484928881:AAFw_WDaVgws2bc7rVdmO99VKP0gv4-M11M")
 CHAT_ID = os.getenv("8511189342")
 APIFY_TOKEN = os.getenv("APIFY_TOKEN")
-USERNAME = os.getenv("rosangelaeslo")  # cambia aquí si quieres otro por defecto
+USERNAME = os.getenv("USERNAME", "rosangelaeslo")  # cambia aquí si quieres otro por defecto
 
 print("Bot iniciado - hora:", datetime.now().strftime('%Y-%m-%d %H:%M:%S'))
 print(f"Variables: USERNAME={USERNAME}, CHAT_ID={CHAT_ID}, TOKEN existe={bool(TOKEN)}, APIFY_TOKEN existe={bool(APIFY_TOKEN)}")
